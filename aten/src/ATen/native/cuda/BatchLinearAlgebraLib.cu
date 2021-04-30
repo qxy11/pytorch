@@ -838,15 +838,12 @@ void apply_lu_cusolver_looped(Tensor& self, Tensor& pivots, Tensor& infos, bool 
     cusolverDnParams_t params = NULL; // use default algorithm (more memory but faster)
     int64_t m = self.size(-2);
     int64_t n = self.size(-1);
-    int64_t lda = std::max<int64_t>(1, n);
+    int64_t lda = std::max<int64_t>(1, m);
     for (int batch = 0; batch < batch_size; ++batch) {
       if (get_pivots) {
-        auto pivots_data = pivots.data_ptr<int64_t>();
+        int64_t * pivots_data = pivots.data_ptr<int64_t>();
         auto pivots_matrix_stride = pivots.size(-1);
 
-        int64_t * host_piv = (int64_t*)malloc(sizeof(int64_t) * m);
-        cudaMemcpy(host_piv, pivots_data + batch * pivots_matrix_stride,
-          sizeof(int64_t) * m, cudaMemcpyDeviceToHost);
         at::cuda::solver::xgetrf<scalar_t>(
           handle, params, m, n,
           self_data + batch * self_stride,
@@ -854,8 +851,6 @@ void apply_lu_cusolver_looped(Tensor& self, Tensor& pivots, Tensor& infos, bool 
           pivots_data + batch * pivots_matrix_stride,
           infos_data + batch
         );
-        cudaMemcpy(host_piv, pivots_data + batch * pivots_matrix_stride,
-          sizeof(int64_t) * m, cudaMemcpyDeviceToHost);
       }
       else {
         at::cuda::solver::xgetrf<scalar_t>(

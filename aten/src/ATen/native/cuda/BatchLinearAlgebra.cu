@@ -1866,7 +1866,7 @@ std::tuple<Tensor, Tensor, Tensor> _lu_with_info_cuda(const Tensor& self, bool p
   req_size.pop_back();
   req_size.back() = k;
 #ifdef USE_CUSOLVER_64_BIT
-  Tensor pivots_tensor = at::arange(1, k + 1, self.options().dtype(at::kLong)).expand(req_size).contiguous();
+  Tensor pivots_tensor = at::ones({k}, self.options().dtype(at::kLong)).expand(req_size).contiguous();
 #else
   Tensor pivots_tensor = at::arange(1, k + 1, self.options().dtype(at::kInt)).expand(req_size).contiguous();
 #endif

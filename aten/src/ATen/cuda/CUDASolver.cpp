@@ -1395,13 +1395,13 @@ void xgetrf<float>(CUDASOLVER_XGETRF_ARGTYPES(float)) {
   size_t workspaceInBytesOnDevice, workspaceInBytesOnHost;
   TORCH_CUSOLVER_CHECK(cusolverDnXgetrf_bufferSize(
     handle, params, m, n, CUDA_R_32F,
-    reinterpret_cast<const void*>(A), lda, CUDA_R_32F,\
+    reinterpret_cast<const void*>(A), lda, CUDA_R_32F,
     &workspaceInBytesOnDevice, &workspaceInBytesOnHost
   ));
   auto& device_allocator = *at::cuda::getCUDADeviceAllocator();
   auto& host_allocator = *at::getCPUAllocator();
   auto work_device_data = device_allocator.allocate(workspaceInBytesOnDevice);
-  auto host_device_data = device_allocator.allocate(workspaceInBytesOnHost);
+  auto host_device_data = host_allocator.allocate(workspaceInBytesOnHost);
   TORCH_CUSOLVER_CHECK(cusolverDnXgetrf(
     handle,
     params,
@@ -1431,7 +1431,7 @@ void xgetrf<double>(CUDASOLVER_XGETRF_ARGTYPES(double)) {
   auto& device_allocator = *at::cuda::getCUDADeviceAllocator();
   auto& host_allocator = *at::getCPUAllocator();
   auto work_device_data = device_allocator.allocate(workspaceInBytesOnDevice);
-  auto host_device_data = device_allocator.allocate(workspaceInBytesOnHost);
+  auto host_device_data = host_allocator.allocate(workspaceInBytesOnHost);
   TORCH_CUSOLVER_CHECK(cusolverDnXgetrf(
     handle,
     params,
@@ -1454,13 +1454,13 @@ template<>
 void xgetrf<c10::complex<float>>(CUDASOLVER_XGETRF_ARGTYPES(c10::complex<float>)) {
   size_t workspaceInBytesOnDevice, workspaceInBytesOnHost;
   TORCH_CUSOLVER_CHECK(cusolverDnXgetrf_bufferSize(
-    handle, params, m, n, CUDA_C_64F, A, lda, CUDA_C_64F,\
+    handle, params, m, n, CUDA_C_32F, A, lda, CUDA_C_32F,
     &workspaceInBytesOnDevice, &workspaceInBytesOnHost
   ));
   auto& device_allocator = *at::cuda::getCUDADeviceAllocator();
   auto& host_allocator = *at::getCPUAllocator();
   auto work_device_data = device_allocator.allocate(workspaceInBytesOnDevice);
-  auto host_device_data = device_allocator.allocate(workspaceInBytesOnHost);
+  auto host_device_data = host_allocator.allocate(workspaceInBytesOnHost);
   TORCH_CUSOLVER_CHECK(cusolverDnXgetrf(
     handle,
     params,
@@ -1483,13 +1483,13 @@ template<>
 void xgetrf<c10::complex<double>>(CUDASOLVER_XGETRF_ARGTYPES(c10::complex<double>)) {
   size_t workspaceInBytesOnDevice, workspaceInBytesOnHost;
   TORCH_CUSOLVER_CHECK(cusolverDnXgetrf_bufferSize(
-    handle, params, m, n, CUDA_C_64F, A, lda, CUDA_C_64F,\
+    handle, params, m, n, CUDA_C_64F, A, lda, CUDA_C_64F,
     &workspaceInBytesOnDevice, &workspaceInBytesOnHost
   ));
   auto& device_allocator = *at::cuda::getCUDADeviceAllocator();
   auto& host_allocator = *at::getCPUAllocator();
   auto work_device_data = device_allocator.allocate(workspaceInBytesOnDevice);
-  auto host_device_data = device_allocator.allocate(workspaceInBytesOnHost);
+  auto host_device_data = host_allocator.allocate(workspaceInBytesOnHost);
   TORCH_CUSOLVER_CHECK(cusolverDnXgetrf(
     handle,
     params,
